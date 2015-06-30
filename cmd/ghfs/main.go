@@ -66,8 +66,9 @@ type Root struct {
 	FS *FS
 }
 
-func (r *Root) Attr() fuse.Attr {
-	return fuse.Attr{Mode: os.ModeDir | 0755}
+func (r *Root) Attr(ctx context.Context, attr *fuse.Attr) error {
+	attr.Mode = os.ModeDir | 0755
+	return nil
 }
 
 func (r *Root) Lookup(ctx context.Context, req *fuse.LookupRequest, resp *fuse.LookupResponse) (fs.Node, error) {
@@ -87,8 +88,9 @@ type User struct {
 	FS *FS
 }
 
-func (u *User) Attr() fuse.Attr {
-	return fuse.Attr{Mode: os.ModeDir | 0755}
+func (u *User) Attr(ctx context.Context, attr *fuse.Attr) error {
+	attr.Mode = os.ModeDir | 0755
+	return nil
 }
 
 func (u *User) Lookup(ctx context.Context, req *fuse.LookupRequest, resp *fuse.LookupResponse) (fs.Node, error) {
@@ -110,8 +112,9 @@ type Repository struct {
 
 var _ = fs.HandleReadDirAller(&Repository{})
 
-func (r *Repository) Attr() fuse.Attr {
-	return fuse.Attr{Mode: os.ModeDir | 0755}
+func (r *Repository) Attr(ctx context.Context, attr *fuse.Attr) error {
+	attr.Mode = os.ModeDir | 0755
+	return nil
 }
 
 func (r *Repository) Lookup(ctx context.Context, req *fuse.LookupRequest, resp *fuse.LookupResponse) (fs.Node, error) {
@@ -147,11 +150,10 @@ type File struct {
 	FS      *FS
 }
 
-func (f *File) Attr() fuse.Attr {
-	return fuse.Attr{
-		Size: uint64(*f.Content.Size),
-		Mode: 0755,
-	}
+func (f *File) Attr(ctx context.Context, attr *fuse.Attr) error {
+	attr.Size = uint64(*f.Content.Size)
+	attr.Mode = 0755
+	return nil
 }
 
 var _ = fs.NodeOpener(&File{})
@@ -179,8 +181,7 @@ type Dir struct {
 	FS       *FS
 }
 
-func (d *Dir) Attr() fuse.Attr {
-	return fuse.Attr{
-		Mode: os.ModeDir | 0755,
-	}
+func (d *Dir) Attr(ctx context.Context, attr *fuse.Attr) error {
+	attr.Mode = os.ModeDir | 0755
+	return nil
 }
